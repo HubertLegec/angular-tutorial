@@ -10,6 +10,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 })
 export class HeroService {
   private readonly URL = 'api/heroes';
+  private readonly httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
 
   constructor(private messageService: MessageService, private http: HttpClient) {
   }
@@ -32,12 +35,17 @@ export class HeroService {
   }
 
   updateHero(hero: Hero): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-    return this.http.put(`${this.URL}/${hero.id}`, {name: hero.name}, httpOptions)
+    return this.http.put(`${this.URL}/${hero.id}`, {name: hero.name}, this.httpOptions)
       .pipe(
         tap(() => this.log(`updated hero id=${hero.id}`)),
+        catchError(this.handleError<any>('updateHero'))
+      );
+  }
+
+  addHero(name: string): Observable<any> {
+    return this.http.post(this.URL, {name}, this.httpOptions)
+      .pipe(
+        tap(() => this.log(`create hero with name ${name}`)),
         catchError(this.handleError<any>('updateHero'))
       );
   }

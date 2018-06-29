@@ -13,6 +13,15 @@ const heroes = [
   { id: 20, name: 'Tornado' }
 ];
 
+function getNextHeroId() {
+  if (heroes.length < 1) {
+    return 1;
+  }
+  const ids = heroes
+    .map(h => h.id);
+  return Math.max(...ids) + 1;
+}
+
 
 const router: Router = Router();
 
@@ -42,6 +51,13 @@ router.put('/:id', (req: Request, res: Response) => {
   } else {
     res.sendStatus(404);
   }
+});
+
+router.post('/', (req: Request, res: Response) => {
+  const newName = req.body.name;
+  const newId = getNextHeroId();
+  heroes.push({name: newName, id: newId});
+  res.sendStatus(200);
 });
 
 export const heroesController: Router = router;
