@@ -1,11 +1,13 @@
 import express from 'express';
+import * as bodyParser from 'body-parser';
 import {heroesController} from './controllers';
 
 const app: express.Application = express();
+app.use(bodyParser.json({limit: '10mb'}));
 
 const port = process.env.PORT || 3000; // todo typing
 
-app.use('/heroes', heroesController);
+app.use('/api/heroes', heroesController);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/`);
